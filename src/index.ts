@@ -1,7 +1,9 @@
 import { Post, commentssResponse, postsResponse } from './schema';
 
 const POSTS_URL = 'https://jsonplaceholder.typicode.com/posts';
-const COMMENTS_URL = 'https://jsonplaceholder.typicode.com/comments';
+const POST_COMMENTS_URL =
+  'https://jsonplaceholder.typicode.com/posts/:id/comments';
+const COMMENTS_URL = 'https://jsonplaceholder.typicode.com/comments'; // ?post=1
 
 const getPosts = async () => {
   const res = await fetch(POSTS_URL);
@@ -71,12 +73,10 @@ const getPostsWithComments = async () => {
 };
 
 const main = async () => {
-  // await getPostsWithComments();
-  //
-  const posts = await getPosts();
-  testFor(posts);
-  testForEach(posts);
-  testReduce(posts);
+  const posts = await getPostsWithComments();
+  posts.forEach((post) =>
+    console.log({ id: post.id, comments: post.comments.length }),
+  );
 };
 
 main();
