@@ -1,0 +1,21 @@
+{
+  "name": "scw-coding-test",
+  "version": "0.0.1",
+  "main": "index.js",
+  "scripts": {
+    "start": "tsx ./src/index.ts"
+  },
+  "keywords": [],
+  "author": "Dean Harris <dean@harris.tc> (https://deanacus.com/)",
+  "license": "MIT",
+  "description": "",
+  "devDependencies": {
+    "@deanacus/tsconfig": "^0.1.0",
+    "@types/node": "^20.14.6",
+    "tsx": "^4.15.6",
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "zod": "^3.23.8"
+  }
+}
