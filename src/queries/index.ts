@@ -1,0 +1,1 @@
+export { getPostsWithComments } from './getPostsWithComments';

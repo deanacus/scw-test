@@ -1,82 +1,17 @@
-import { Post, commentssResponse, postsResponse } from './schema';
+import { getPostsWithComments } from './queries';
 
-const POSTS_URL = 'https://jsonplaceholder.typicode.com/posts';
-const POST_COMMENTS_URL =
-  'https://jsonplaceholder.typicode.com/posts/:id/comments';
-const COMMENTS_URL = 'https://jsonplaceholder.typicode.com/comments'; // ?post=1
-
-const getPosts = async () => {
-  const res = await fetch(POSTS_URL);
-  const data = await res.json();
-  return postsResponse.parse(data);
-};
-
-const getComments = async () => {
-  const res = await fetch(COMMENTS_URL);
-  const data = await res.json();
-  return commentssResponse.parse(data);
-};
-
-const testReduce = (posts: Post[]) => {
-  console.time('Reduce');
-  posts.reduce<Map<number, Post>>((result, post) => {
-    result.set(post.id, post);
-    return result;
-  }, new Map<number, Post>());
-  console.timeEnd('Reduce');
-};
-
-const testForEach = (posts: Post[]) => {
-  const postsMap = new Map<number, Post>();
-  console.time('ForEach');
-  posts.forEach((post) => {
-    postsMap.set(post.id, post);
-  });
-  console.timeEnd('ForEach');
-};
-
-const testFor = (posts: Post[]) => {
-  console.time('For Of');
-  const postsMap = new Map<number, Post>();
-
-  for (const post of posts) {
-    postsMap.set(post.id, post);
-  }
-  console.timeEnd('For Of');
-};
-
-const getPostsWithComments = async () => {
-  const [posts, comments] = await Promise.all([getPosts(), getComments()]);
-  // const postsMap = new Map<number, Post>();
-
-  // for (const post of posts) {
-  //   postsMap.set(post.id, post);
-  // }
-
-  const pMap = posts.reduce<Map<number, Post>>((result, post) => {
-    result.set(post.id, post);
-    return result;
-  }, new Map<number, Post>());
-
-  // posts.forEach((post) => {
-  //   postsMap.set(post.id, post);
-  // });
-
-  comments.forEach((comment) => {
-    const post = pMap.get(comment.postId);
-    if (post) {
-      post.comments.push(comment);
-    }
-  });
-
-  return Array.from(pMap.values());
-};
-
-const main = async () => {
+// IIFE to call as required
+(async () => {
   const posts = await getPostsWithComments();
-  posts.forEach((post) =>
-    console.log({ id: post.id, comments: post.comments.length }),
-  );
-};
+  posts.forEach((post) => {
+    const isValid = post.comments && Array.isArray(post.comments);
+    console.assert(isValid, 'Post does not include comments ppoperty');
+  });
 
-main();
+  const avgComments =
+    posts.reduce((r, p) => r + p.comments.length, 0) / posts.length;
+
+  console.log(
+    `Received ${posts.length} posts with an average of ${avgComments} comments per post`,
+  );
+})();
